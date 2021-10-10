@@ -26,7 +26,7 @@ Ruby app backed by a Postgres/Postgis database stored in a Docker Container.
 ##### Install Gems
 ```bundle install```
 
-#### Create an .env file and paste this
+#### Create an .env file and paste DB Credentials
 ```
 export DB_ADDRESS=localhost
 export DB_PORT=5432
