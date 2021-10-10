@@ -70,7 +70,6 @@
   <h3>Pages</h3>
 
   <ul class="link-list">
-    <li><a href="./Dockerfile.html">Dockerfile</a>
     <li><a href="./Gemfile.html">Gemfile</a>
     <li><a href="./Gemfile_lock.html">Gemfile.lock</a>
     <li><a href="./README_md_txt.html">README.md</a>
@@ -95,7 +94,9 @@
 
 <p>/c &lt;db to switch to&gt;</p>
 
-<p>// [ // { // “type”: “Point”, // “coordinates”: [100.0, 0.0] // }, // { // “type”: “Point”, // “coordinates”: [32.0, 5.0] // }, // { // “type”: “Polygon”, // “coordinates”: [ // [ // [100.0, 0.0], // [101.0, 0.0], // [101.0, 1.0], // [100.0, 1.0], // [100.0, 0.0] // ] // ] // }, // { // “type”: “Polygon”, // “coordinates”: [ // [ // [100.0, 0.0], // [101.0, 0.0], // [101.0, 1.0], // [100.0, 1.0], // [100.0, 0.0] // ], // [ // [100.8, 0.8], // [100.8, 0.2], // [100.2, 0.2], // [100.2, 0.8], // [100.8, 0.8] // ] // ] // }, // { // “type”: “MultiLineString”, // “coordinates”: [ // [ // [100.0, 0.0], // [101.0, 1.0] // ], // [ // [102.0, 2.0], // [103.0, 3.0] // ] // ] // } // ]</p>
+<p>[ { “type”: “Point”, “coordinates”: [100.0, 0.0] }, { “type”: “Point”, “coordinates”: [32.0, 5.0] }, { “type”: “Polygon”, “coordinates”: [ [ [100.0, 0.0], [101.0, 0.0], [101.0, 1.0], [100.0, 1.0], [100.0, 0.0] ] ] }, { “type”: “Polygon”, “coordinates”: [ [ [100.0, 0.0], [101.0, 0.0], [101.0, 1.0], [100.0, 1.0], [100.0, 0.0] ], [ [100.8, 0.8], [100.8, 0.2], [100.2, 0.2], [100.2, 0.8], [100.8, 0.8] ] ] }, { “type”: “MultiLineString”, “coordinates”: [ [ [100.0, 0.0], [101.0, 1.0] ], [ [102.0, 2.0], [103.0, 3.0] ] ] } ]</p>
+
+<p>{  “type”: “GeometryCollection”,  “geometries”: [{ “type”: “Point”, “coordinates”: [100.0, 0.0] }, { “type”: “LineString”, “coordinates”: [ [101.0, 0.0], [102.0, 1.0] ] }] }</p>
 
 </main>
 

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="UTF-8">
+
+<title>class DbTest - RDoc Documentation</title>
+
+<script type="text/javascript">
+  var rdoc_rel_prefix = "./";
+  var index_rel_prefix = "./";
+</script>
+
+<script src="./js/navigation.js" defer></script>
+<script src="./js/search.js" defer></script>
+<script src="./js/search_index.js" defer></script>
+<script src="./js/searcher.js" defer></script>
+<script src="./js/darkfish.js" defer></script>
+
+<link href="./css/fonts.css" rel="stylesheet">
+<link href="./css/rdoc.css" rel="stylesheet">
+
+
+<body id="top" role="document" class="class">
+<nav role="navigation">
+  <div id="project-navigation">
+    <div id="home-section" role="region" title="Quick navigation" class="nav-section">
+  <h2>
+    <a href="./index.html" rel="home">Home</a>
+  </h2>
+
+  <div id="table-of-contents-navigation">
+    <a href="./table_of_contents.html#pages">Pages</a>
+    <a href="./table_of_contents.html#classes">Classes</a>
+    <a href="./table_of_contents.html#methods">Methods</a>
+  </div>
+</div>
+
+    <div id="search-section" role="search" class="project-section initially-hidden">
+  <form action="#" method="get" accept-charset="utf-8">
+    <div id="search-field-wrapper">
+      <input id="search-field" role="combobox" aria-label="Search"
+             aria-autocomplete="list" aria-controls="search-results"
+             type="text" name="search" placeholder="Search" spellcheck="false"
+             title="Type to search, Up and Down to navigate, Enter to load">
+    </div>
+
+    <ul id="search-results" aria-label="Search Results"
+        aria-busy="false" aria-expanded="false"
+        aria-atomic="false" class="initially-hidden"></ul>
+  </form>
+</div>
+
+  </div>
+
+  
+
+  <div id="class-metadata">
+    
+    
+<div id="parent-class-section" class="nav-section">
+  <h3>Parent</h3>
+
+  <p class="link">Test::Unit::TestCase
+</div>
+
+    
+    
+    
+<!-- Method Quickref -->
+<div id="method-list-section" class="nav-section">
+  <h3>Methods</h3>
+
+  <ul class="link-list" role="directory">
+    <li ><a href="#method-i-test_clear_table">#test_clear_table</a>
+    <li ><a href="#method-i-test_save_geometry_to_db">#test_save_geometry_to_db</a>
+  </ul>
+</div>
+
+  </div>
+</nav>
+
+<main role="main" aria-labelledby="class-DbTest">
+  <h1 id="class-DbTest" class="class">
+    class DbTest
+  </h1>
+
+  <section class="description">
+    
+  </section>
+
+  <section id="5Buntitled-5D" class="documentation-section">
+
+
+
+
+
+     <section id="public-instance-5Buntitled-5D-method-details" class="method-section">
+       <header>
+         <h3>Public Instance Methods</h3>
+       </header>
+
+      <div id="method-i-test_clear_table" class="method-detail ">
+        <div class="method-heading">
+          <span class="method-name">test_clear_table</span><span
+            class="method-args">()</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+
+        <div class="method-description">
+          
+
+          <div class="method-source-code" id="test_clear_table-source">
+            <pre><span class="ruby-comment"># File test/db_test.rb, line 41</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">test_clear_table</span>
+
+  <span class="ruby-comment"># Throws an error message when trying to clear a table that doesn&#39;t exist</span>
+  <span class="ruby-identifier">assert_equal</span> <span class="ruby-string">&quot;PG::UndefinedTable: Relation &#39;Customer&#39; does not exist&quot;</span>, <span class="ruby-constant">Db</span>.<span class="ruby-identifier">clear_table</span>(<span class="ruby-string">&quot;Customer&quot;</span>)
+
+  <span class="ruby-comment"># Throws an error message when trying pass something other than a String as a parameter</span>
+  <span class="ruby-identifier">assert_equal</span> <span class="ruby-string">&quot;PG::SyntaxError: Argument needs to be a String&quot;</span>, <span class="ruby-constant">Db</span>.<span class="ruby-identifier">clear_table</span>(<span class="ruby-value">2</span>)
+  <span class="ruby-identifier">assert_equal</span> <span class="ruby-string">&quot;PG::SyntaxError: Argument needs to be a String&quot;</span>, <span class="ruby-constant">Db</span>.<span class="ruby-identifier">clear_table</span>({<span class="ruby-value">&quot;type&quot;:</span> <span class="ruby-string">&quot;Hash&quot;</span>})
+  <span class="ruby-identifier">assert_equal</span> <span class="ruby-string">&quot;PG::SyntaxError: Argument needs to be a String&quot;</span>, <span class="ruby-constant">Db</span>.<span class="ruby-identifier">clear_table</span>([{<span class="ruby-value">&quot;type&quot;:</span> <span class="ruby-string">&quot;Array&quot;</span>}])
+<span class="ruby-keyword">end</span></pre>
+          </div>
+        </div>
+
+
+      </div>
+
+      <div id="method-i-test_save_geometry_to_db" class="method-detail ">
+        <div class="method-heading">
+          <span class="method-name">test_save_geometry_to_db</span><span
+            class="method-args">()</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+
+        <div class="method-description">
+          
+
+          <div class="method-source-code" id="test_save_geometry_to_db-source">
+            <pre><span class="ruby-comment"># File test/db_test.rb, line 9</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">test_save_geometry_to_db</span>
+
+  <span class="ruby-identifier">geometries</span> = [
+    {
+    <span class="ruby-value">&quot;type&quot;:</span> <span class="ruby-string">&quot;Point&quot;</span>,
+    <span class="ruby-value">&quot;coordinates&quot;:</span> [<span class="ruby-value">2.0</span>, <span class="ruby-value">1.0</span>]
+    },
+    {
+      <span class="ruby-value">&quot;type&quot;:</span> <span class="ruby-string">&quot;LineString&quot;</span>,
+      <span class="ruby-value">&quot;coordinates&quot;:</span> [
+        [<span class="ruby-value">100.0</span>, <span class="ruby-value">0.0</span>],
+        [<span class="ruby-value">101.0</span>, <span class="ruby-value">1.0</span>]
+      ]
+    }
+  ]
+
+  <span class="ruby-identifier">not_valid_geojson</span> = {<span class="ruby-value">&quot;type&quot;:</span> <span class="ruby-string">&quot;not a valid geojson&quot;</span>};
+  <span class="ruby-identifier">not_valid_array_geojson</span> = [
+    {<span class="ruby-value">&quot;type&quot;:</span> <span class="ruby-string">&quot;not a valid geojson&quot;</span>},
+    {<span class="ruby-value">&quot;type&quot;:</span> <span class="ruby-string">&quot;not a valid geojson2&quot;</span>}
+  ]
+
+  <span class="ruby-identifier">assert_equal</span> <span class="ruby-string">&quot;Saved&quot;</span>, <span class="ruby-constant">Db</span>.<span class="ruby-identifier">save_geometry_to_db</span>(<span class="ruby-identifier">geometries</span>)
+
+  <span class="ruby-comment"># Prints an error message when something other than a valid Array of GeoJSON Objects is passed as a parameter</span>
+  <span class="ruby-identifier">assert_equal</span> <span class="ruby-string">&quot;NoMethodError: Parameter needs to be an Array of GeoJSON Objects&quot;</span>, <span class="ruby-constant">Db</span>.<span class="ruby-identifier">save_geometry_to_db</span>(<span class="ruby-value">2</span>)
+  <span class="ruby-identifier">assert_equal</span> <span class="ruby-string">&quot;NoMethodError: Parameter needs to be an Array of GeoJSON Objects&quot;</span>, <span class="ruby-constant">Db</span>.<span class="ruby-identifier">save_geometry_to_db</span>(<span class="ruby-string">&quot;string&quot;</span>)
+  <span class="ruby-identifier">assert_equal</span> <span class="ruby-string">&quot;TypeError: Parameter needs to be an Array of GeoJSON Objects&quot;</span>, <span class="ruby-constant">Db</span>.<span class="ruby-identifier">save_geometry_to_db</span>(<span class="ruby-identifier">not_valid_geojson</span>)
+  <span class="ruby-identifier">assert_equal</span> <span class="ruby-string">&quot;PG::InternalError: Parameter needs to be an Array of GeoJSON Objects&quot;</span>, <span class="ruby-constant">Db</span>.<span class="ruby-identifier">save_geometry_to_db</span>(<span class="ruby-identifier">not_valid_array_geojson</span>)
+
+<span class="ruby-keyword">end</span></pre>
+          </div>
+        </div>
+
+
+      </div>
+
+    </section>
+
+  </section>
+</main>
+
+
+<footer id="validator-badges" role="contentinfo">
+  <p><a href="https://validator.w3.org/check/referer">Validate</a>
+  <p>Generated by <a href="https://ruby.github.io/rdoc/">RDoc</a> 6.3.2.
+  <p>Based on <a href="http://deveiate.org/projects/Darkfish-RDoc/">Darkfish</a> by <a href="http://deveiate.org">Michael Granger</a>.
+</footer>
+

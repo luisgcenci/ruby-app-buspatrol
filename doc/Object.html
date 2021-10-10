@@ -75,11 +75,6 @@
     <li ><a href="#method-i-2Fpoints">#/points</a>
     <li ><a href="#method-i-2Fpoints-2Dwithin-2Dpolygon">#/points-within-polygon</a>
     <li ><a href="#method-i-2Fpoints-2Dwithin-2Dradius-2F-3Aradius">#/points-within-radius/:radius</a>
-    <li ><a href="#method-i-check_geojson_class">#check_geojson_class</a>
-    <li ><a href="#method-i-db_conn">#db_conn</a>
-    <li ><a href="#method-i-points_within_polygon">#points_within_polygon</a>
-    <li ><a href="#method-i-points_within_radius_around_a_point">#points_within_radius_around_a_point</a>
-    <li ><a href="#method-i-save_geometry_to_db">#save_geometry_to_db</a>
   </ul>
 </div>
 
@@ -114,19 +109,21 @@
         </div>
 
         <div class="method-description">
-          <p>Saves an array of GeoJSON Point Objects or a Geometry Collection to the DB.</p>
-
-<p>GeoJSON Objects should be sent in the body</p>
-
-<p>Responds with a “Saved” Message</p>
+          <p>Saves an array of GeoJSON Point Objects or a Geometry Collection to the DB. <br> GeoJSON Objects should be sent in the body <br> Responds with a “Saved” Message</p>
 
           <div class="method-source-code" id="2Fpoints-source">
             <pre><span class="ruby-comment"># File app.rb, line 17</span>
 <span class="ruby-identifier">post</span> <span class="ruby-string">&#39;/points&#39;</span> <span class="ruby-keyword">do</span>
-  <span class="ruby-identifier">geojson</span> = <span class="ruby-constant">JSON</span>.<span class="ruby-identifier">parse</span>(<span class="ruby-identifier">request</span>.<span class="ruby-identifier">body</span>.<span class="ruby-identifier">read</span>)
-  <span class="ruby-identifier">check_geojson_class</span>(<span class="ruby-identifier">geojson</span>)
+  <span class="ruby-identifier">arr_geojson</span> = <span class="ruby-constant">JSON</span>.<span class="ruby-identifier">parse</span>(<span class="ruby-identifier">request</span>.<span class="ruby-identifier">body</span>.<span class="ruby-identifier">read</span>)
 
-  <span class="ruby-string">&#39;Saved!&#39;</span>
+  <span class="ruby-keyword">begin</span>
+    <span class="ruby-identifier">raise</span> <span class="ruby-constant">TypeError</span> <span class="ruby-keyword">unless</span> [<span class="ruby-constant">Array</span>, <span class="ruby-constant">Hash</span>].<span class="ruby-identifier">member?</span> <span class="ruby-identifier">arr_geojson</span>.<span class="ruby-identifier">class</span>
+  <span class="ruby-keyword">rescue</span> <span class="ruby-constant">TypeError</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">e</span>
+    <span class="ruby-identifier">body</span> <span class="ruby-node">&quot;#{e.class}: Please send an Array of GeoJSON points in the body with your request or a Geometry Collection Object.&quot;</span>
+    <span class="ruby-keyword">break</span>
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-constant">Helpers</span>.<span class="ruby-identifier">check_geojson_class</span>(<span class="ruby-identifier">arr_geojson</span>)
 <span class="ruby-keyword">end</span></pre>
           </div>
         </div>
@@ -142,17 +139,23 @@
         </div>
 
         <div class="method-description">
-          <p>Receives a GeoJSON Polygon (no holes)</p>
-
-<p>GeoJSON Polygon should be sent in the body</p>
-
-<p>Responds with all GeoJSON points whitin the GeoJSON Polygon received</p>
+          <p>Receives a GeoJSON Polygon (no holes) <br> GeoJSON Polygon should be sent in the body <br> Responds with all GeoJSON points whitin the GeoJSON Polygon received</p>
 
           <div class="method-source-code" id="2Fpoints-2Dwithin-2Dpolygon-source">
-            <pre><span class="ruby-comment"># File app.rb, line 45</span>
+            <pre><span class="ruby-comment"># File app.rb, line 63</span>
 <span class="ruby-identifier">get</span> <span class="ruby-string">&#39;/points-within-polygon&#39;</span> <span class="ruby-keyword">do</span>
+
   <span class="ruby-identifier">geojson_polygon</span> = <span class="ruby-constant">JSON</span>.<span class="ruby-identifier">parse</span>(<span class="ruby-identifier">request</span>.<span class="ruby-identifier">body</span>.<span class="ruby-identifier">read</span>)
-  <span class="ruby-identifier">result</span> = <span class="ruby-identifier">points_within_polygon</span>(<span class="ruby-identifier">geojson_polygon</span>)
+
+  <span class="ruby-keyword">begin</span>
+    <span class="ruby-identifier">raise</span> <span class="ruby-constant">TypeError</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">geojson_polygon</span>.<span class="ruby-identifier">is_a?</span> (<span class="ruby-constant">Hash</span>)
+  <span class="ruby-keyword">rescue</span> <span class="ruby-constant">TypeError</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">e</span>
+    <span class="ruby-identifier">body</span> <span class="ruby-node">&quot;#{e.class}: Please send a GeoJSON point in the body with your request.&quot;</span>
+    <span class="ruby-keyword">break</span>
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-identifier">result</span> = <span class="ruby-constant">Points</span>.<span class="ruby-identifier">points_within_polygon</span>(<span class="ruby-identifier">geojson_polygon</span>)
+
   <span class="ruby-identifier">result</span>.<span class="ruby-identifier">to_s</span>
 <span class="ruby-keyword">end</span></pre>
           </div>
@@ -169,170 +172,32 @@
         </div>
 
         <div class="method-description">
-          <p>Receives a GeoJSON Point and a Radius</p>
-
-<p>GeoJSON Point should be sent in the body</p>
-
-<p>Radius should be sent as an URL Parameter</p>
-
-<p>Responds with all the GeoJSON points in the DB within a radius around the GeoJSON Point received</p>
+          <p>Receives a GeoJSON Point and a Radius <br> GeoJSON Point should be sent in the body <br> Radius should be sent as an URL Parameter <br> Responds with all the GeoJSON points in the DB within a radius around the GeoJSON Point received</p>
 
           <div class="method-source-code" id="2Fpoints-2Dwithin-2Dradius-2F-3Aradius-source">
-            <pre><span class="ruby-comment"># File app.rb, line 32</span>
+            <pre><span class="ruby-comment"># File app.rb, line 35</span>
 <span class="ruby-identifier">get</span> <span class="ruby-string">&#39;/points-within-radius/:radius&#39;</span> <span class="ruby-keyword">do</span>
+
   <span class="ruby-identifier">geojson_point</span> = <span class="ruby-constant">JSON</span>.<span class="ruby-identifier">parse</span>(<span class="ruby-identifier">request</span>.<span class="ruby-identifier">body</span>.<span class="ruby-identifier">read</span>)
   <span class="ruby-identifier">radius</span> = <span class="ruby-identifier">params</span>[<span class="ruby-string">&#39;radius&#39;</span>]
-  <span class="ruby-identifier">result</span> = <span class="ruby-identifier">points_within_radius_around_a_point</span>(<span class="ruby-identifier">geojson_point</span>, <span class="ruby-identifier">radius</span>)
+  
+  <span class="ruby-keyword">begin</span>
+    <span class="ruby-identifier">radius</span> = <span class="ruby-constant">Float</span>(<span class="ruby-identifier">radius</span>)
+  <span class="ruby-keyword">rescue</span> <span class="ruby-constant">ArgumentError</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">e</span>
+    <span class="ruby-identifier">body</span> <span class="ruby-node">&quot;#{e.class}: Please send a number as parameter in the URL.&quot;</span>
+    <span class="ruby-keyword">break</span>
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-keyword">begin</span>
+    <span class="ruby-identifier">raise</span> <span class="ruby-constant">TypeError</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">geojson_point</span>.<span class="ruby-identifier">is_a?</span> (<span class="ruby-constant">Hash</span>)
+  <span class="ruby-keyword">rescue</span> <span class="ruby-constant">TypeError</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">e</span>
+    <span class="ruby-identifier">body</span> <span class="ruby-node">&quot;#{e.class}: Please send a GeoJSON point in the body with your request.&quot;</span>
+    <span class="ruby-keyword">break</span>
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-identifier">result</span> = <span class="ruby-constant">Points</span>.<span class="ruby-identifier">points_within_radius_around_a_point</span>(<span class="ruby-identifier">geojson_point</span>, <span class="ruby-identifier">radius</span>)
+
   <span class="ruby-identifier">result</span>.<span class="ruby-identifier">to_s</span>
-<span class="ruby-keyword">end</span></pre>
-          </div>
-        </div>
-
-
-      </div>
-
-      <div id="method-i-check_geojson_class" class="method-detail ">
-        <div class="method-heading">
-          <span class="method-name">check_geojson_class</span><span
-            class="method-args">(geojson)</span>
-          <span class="method-click-advice">click to toggle source</span>
-        </div>
-
-        <div class="method-description">
-          <p>Checks if GeoJSON is an array or a Hash</p>
-
-<p>@param <code>geojson</code> [Array or Hash] Array of GeoJSON Objects or a Geometry Collection</p>
-
-          <div class="method-source-code" id="check_geojson_class-source">
-            <pre><span class="ruby-comment"># File app.rb, line 99</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">check_geojson_class</span>(<span class="ruby-identifier">geojson</span>)
-  <span class="ruby-keyword">case</span> <span class="ruby-identifier">geojson</span>
-  <span class="ruby-keyword">when</span> <span class="ruby-constant">Array</span>
-    <span class="ruby-identifier">save_geometry_to_db</span>(<span class="ruby-identifier">geojson</span>)
-  <span class="ruby-keyword">when</span> <span class="ruby-constant">Hash</span>
-    <span class="ruby-identifier">save_geometry_to_db</span>(<span class="ruby-identifier">geojson</span>[<span class="ruby-string">&#39;geometries&#39;</span>])
-  <span class="ruby-keyword">end</span>
-<span class="ruby-keyword">end</span></pre>
-          </div>
-        </div>
-
-
-      </div>
-
-      <div id="method-i-db_conn" class="method-detail ">
-        <div class="method-heading">
-          <span class="method-name">db_conn</span><span
-            class="method-args">()</span>
-          <span class="method-click-advice">click to toggle source</span>
-        </div>
-
-        <div class="method-description">
-          <p>Creates a connection with the DB</p>
-
-<p>@return [PG::Connection] a connection with the DB</p>
-
-          <div class="method-source-code" id="db_conn-source">
-            <pre><span class="ruby-comment"># File app.rb, line 127</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">db_conn</span>
-  <span class="ruby-constant">PG</span><span class="ruby-operator">::</span><span class="ruby-constant">Connection</span>.<span class="ruby-identifier">open</span>(<span class="ruby-string">&#39;localhost&#39;</span>, <span class="ruby-value">5432</span>, <span class="ruby-string">&#39;&#39;</span>, <span class="ruby-string">&#39;&#39;</span>, <span class="ruby-string">&#39;gps_collector&#39;</span>, <span class="ruby-string">&#39;postgres&#39;</span>, <span class="ruby-string">&#39;mudeiasenha&#39;</span>)
-<span class="ruby-keyword">end</span></pre>
-          </div>
-        </div>
-
-
-      </div>
-
-      <div id="method-i-points_within_polygon" class="method-detail ">
-        <div class="method-heading">
-          <span class="method-name">points_within_polygon</span><span
-            class="method-args">(geojson_polygon)</span>
-          <span class="method-click-advice">click to toggle source</span>
-        </div>
-
-        <div class="method-description">
-          <p>Gets All GeoJSON Points in the DB within a given Polygon</p>
-
-<p>@param <code>geojson_polygon</code> [Hash] a GeoJSON Polygon</p>
-
-<p>@return [Array] An array of GeoJSON Points</p>
-
-          <div class="method-source-code" id="points_within_polygon-source">
-            <pre><span class="ruby-comment"># File app.rb, line 58</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">points_within_polygon</span>(<span class="ruby-identifier">geojson_polygon</span>)
-  <span class="ruby-identifier">conn</span> = <span class="ruby-identifier">db_conn</span>
-  <span class="ruby-identifier">result</span> = []
-  <span class="ruby-identifier">conn</span>.<span class="ruby-identifier">exec</span>(<span class="ruby-node">&quot;SELECT  ST_AsGeoJSON(geometries_geom) \
-            FROM Geometries \
-            WHERE NOT ST_Within(geometries_geom, ST_GeomFromGeoJSON(&#39;#{geojson_polygon.to_json}&#39;));&quot;</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">r</span><span class="ruby-operator">|</span>
-    <span class="ruby-identifier">r</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">row</span><span class="ruby-operator">|</span>
-      <span class="ruby-identifier">result</span>.<span class="ruby-identifier">push</span>(<span class="ruby-identifier">row</span>.<span class="ruby-identifier">values</span>)
-    <span class="ruby-keyword">end</span>
-  <span class="ruby-keyword">end</span>
-
-  <span class="ruby-identifier">result</span>
-<span class="ruby-keyword">end</span></pre>
-          </div>
-        </div>
-
-
-      </div>
-
-      <div id="method-i-points_within_radius_around_a_point" class="method-detail ">
-        <div class="method-heading">
-          <span class="method-name">points_within_radius_around_a_point</span><span
-            class="method-args">(geojson_point, radius)</span>
-          <span class="method-click-advice">click to toggle source</span>
-        </div>
-
-        <div class="method-description">
-          <p>Gets All GeoJSON Points in the DB within a given radius around a given point</p>
-
-<p>@param <code>geojson_point</code> [Hash] a central GeoJSON Point @param <code>radius</code> [Integer] a radius</p>
-
-<p>@return [Array] An array of GeoJSON Points</p>
-
-          <div class="method-source-code" id="points_within_radius_around_a_point-source">
-            <pre><span class="ruby-comment"># File app.rb, line 80</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">points_within_radius_around_a_point</span>(<span class="ruby-identifier">geojson_point</span>, <span class="ruby-identifier">radius</span>)
-  <span class="ruby-identifier">conn</span> = <span class="ruby-identifier">db_conn</span>
-  <span class="ruby-identifier">result</span> = []
-  <span class="ruby-identifier">conn</span>.<span class="ruby-identifier">exec</span>(<span class="ruby-node">&quot;SELECT ST_AsGeoJSON(geometries_geom) \
-            FROM Geometries \
-            WHERE ST_DWithin(ST_GeomFromGeoJSON(&#39;#{geojson_point.to_json}&#39;), geometries_geom, #{radius});&quot;</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">r</span><span class="ruby-operator">|</span>
-    <span class="ruby-identifier">r</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">row</span><span class="ruby-operator">|</span>
-      <span class="ruby-identifier">result</span>.<span class="ruby-identifier">push</span>(<span class="ruby-identifier">row</span>.<span class="ruby-identifier">values</span>)
-    <span class="ruby-keyword">end</span>
-  <span class="ruby-keyword">end</span>
-
-  <span class="ruby-identifier">result</span>
-<span class="ruby-keyword">end</span></pre>
-          </div>
-        </div>
-
-
-      </div>
-
-      <div id="method-i-save_geometry_to_db" class="method-detail ">
-        <div class="method-heading">
-          <span class="method-name">save_geometry_to_db</span><span
-            class="method-args">(geometries)</span>
-          <span class="method-click-advice">click to toggle source</span>
-        </div>
-
-        <div class="method-description">
-          <p>Saves GeoJSON Objects to the DB</p>
-
-<p>@param <code>geometries</code> [Array] An Array of GeoJSON Objects</p>
-
-          <div class="method-source-code" id="save_geometry_to_db-source">
-            <pre><span class="ruby-comment"># File app.rb, line 113</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">save_geometry_to_db</span>(<span class="ruby-identifier">geometries</span>)
-  <span class="ruby-identifier">conn</span> = <span class="ruby-identifier">db_conn</span>
-  <span class="ruby-identifier">geometries</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">geometry</span><span class="ruby-operator">|</span>
-    <span class="ruby-identifier">type</span> = <span class="ruby-identifier">geometry</span>[<span class="ruby-string">&#39;type&#39;</span>]
-    <span class="ruby-identifier">conn</span>.<span class="ruby-identifier">exec</span>(<span class="ruby-node">&quot;INSERT INTO Geometries(geometries_type, geometries_geom) \
-              VALUES (&#39;#{type}&#39;, ST_GeomFromGeoJSON(&#39;#{geometry.to_json}&#39;));&quot;</span>)
-  <span class="ruby-keyword">end</span>
 <span class="ruby-keyword">end</span></pre>
           </div>
         </div>

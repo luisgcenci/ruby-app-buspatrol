@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative './db.rb'
+require_relative '../classes/db.rb'
 
 class Points
   #
@@ -26,7 +26,7 @@ class Points
       end
     result
     rescue PG::InternalError
-      "Error: Parameter needs to be a valid GeoJSON"
+      "PG::InternalError: Parameter needs to be a valid GeoJSON"
     end
   end
 
@@ -53,11 +53,11 @@ class Points
       end
       result
     rescue PG::InternalError
-      "Error: First Parameter needs to be a valid GeoJSON"
+      "PG::InternalError: First Parameter needs to be a valid GeoJSON"
     rescue PG::UndefinedColumn
-      "Error: Second Parameter needs to be an Integer"
+      "UndefinedColumn Error: Second Parameter needs to be an Integer"
     rescue PG::SyntaxError
-      "Error: Second Parameter needs to be an Integer"
+      "SyntaxError Error: Second Parameter needs to be an Integer"
     end
   end
 end

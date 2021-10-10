@@ -1,6 +1,6 @@
 require "test/unit"
-require_relative '../points.rb'
-require_relative '../db.rb'
+require_relative '../classes/points.rb'
+require_relative '../classes/db.rb'
 
 class PointsTest < Test::Unit::TestCase
 
@@ -8,7 +8,7 @@ class PointsTest < Test::Unit::TestCase
   Db.clear_table("Geometries")
 
   # Insert Data in "Geometries Table" For Testing 
-  Db.insert("Geometries",[
+  Db.save_geometry_to_db([
     {
       "type": "Point",
       "coordinates": [-1.0, 0.0]
@@ -65,12 +65,12 @@ class PointsTest < Test::Unit::TestCase
       ["{\"type\":\"Point\",\"coordinates\":[0,-2]}"]
     ], Points.points_within_polygon(geojson_polygon)
 
-    not_valid_geojson = '{"type":"not valid geojson"}'
+    not_valid_geojson = {"type": "not valid geojson"}
     
-    # Prints an error message when something other than a valid GeoJSON is passed as an argument
-    assert_equal("Error: Parameter needs to be a valid GeoJSON", Points.points_within_polygon(2))
-    assert_equal("Error: Parameter needs to be a valid GeoJSON", Points.points_within_polygon("String"))
-    assert_equal("Error: Parameter needs to be a valid GeoJSON", Points.points_within_polygon(not_valid_geojson))
+    # Throws an error message when something other than a valid GeoJSON is passed as a parameter
+    assert_equal("PG::InternalError: Parameter needs to be a valid GeoJSON", Points.points_within_polygon(2))
+    assert_equal("PG::InternalError: Parameter needs to be a valid GeoJSON", Points.points_within_polygon("String"))
+    assert_equal("PG::InternalError: Parameter needs to be a valid GeoJSON", Points.points_within_polygon(not_valid_geojson))
 
   end
 
@@ -93,15 +93,15 @@ class PointsTest < Test::Unit::TestCase
       ]
     ], Points.points_within_radius_around_a_point(geojson_point, radius)
 
-    not_valid_geojson = '{"type":"not valid geojson"}'
+    not_valid_geojson = {"type": "not valid geojson"}
     
-    # Prints an error message when something other than a valid GeoJSON is passed as first argument
-    assert_equal("Error: First Parameter needs to be a valid GeoJSON",Points.points_within_radius_around_a_point(not_valid_geojson, 1))
-    assert_equal("Error: First Parameter needs to be a valid GeoJSON",Points.points_within_radius_around_a_point(1, 1))
-    assert_equal("Error: First Parameter needs to be a valid GeoJSON",Points.points_within_radius_around_a_point("String", 1))
+    # Throws an error message when something other than a valid GeoJSON is passed as first parameter
+    assert_equal("PG::InternalError: First Parameter needs to be a valid GeoJSON",Points.points_within_radius_around_a_point(not_valid_geojson, 1))
+    assert_equal("PG::InternalError: First Parameter needs to be a valid GeoJSON",Points.points_within_radius_around_a_point(1, 1))
+    assert_equal("PG::InternalError: First Parameter needs to be a valid GeoJSON",Points.points_within_radius_around_a_point("String", 1))
 
-    # Prints an error message when something other than a Numeric Object is passed as second argument
-    assert_equal("Error: Second Parameter needs to be an Integer", Points.points_within_radius_around_a_point(geojson_point, not_valid_geojson))
-    assert_equal("Error: Second Parameter needs to be an Integer", Points.points_within_radius_around_a_point(geojson_point, "String"))
+    # Throws an error message when something other than a Numeric Object is passed as second parameter
+    assert_equal("SyntaxError Error: Second Parameter needs to be an Integer", Points.points_within_radius_around_a_point(geojson_point, not_valid_geojson))
+    assert_equal("UndefinedColumn Error: Second Parameter needs to be an Integer", Points.points_within_radius_around_a_point(geojson_point, "String"))
   end
 end
