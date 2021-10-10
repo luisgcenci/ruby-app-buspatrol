@@ -2,5 +2,4 @@
 Ruby app backed by a Postgres/Postgis database.
 
 
-##
-this is a h2 tag
+## this is a h2 tag
