@@ -2,13 +2,12 @@
 
 source 'https://rubygems.org'
 
-gem 'pg'
-gem 'sinatra'
-gem 'sinatra-reloader', '~> 1.0'
-gem 'json'
 gem 'dotenv'
+gem 'json'
+gem 'pg'
 gem 'rdoc'
 gem 'rubocop'
+gem 'sinatra'
+gem 'sinatra-reloader', '~> 1.0'
 gem 'test-unit'
 gem 'yard'
-
